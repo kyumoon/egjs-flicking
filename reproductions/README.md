@@ -47,9 +47,16 @@ feature flag (default `false`). So after `npm run build && npm run start` the
 mismatch still *happens* (the server sends `<panel>`, the client replaces it),
 but **nothing is logged** unless the flag is on.
 
-Both apps enable it the Nuxt-native way — `debug: { hydration: true }` in
-`nuxt.config.ts`, which sets `__VUE_PROD_HYDRATION_MISMATCH_DETAILS__` to
-`true`. That is why the bug app prints the mismatch even in production.
+Both apps force the flag on unconditionally via `vite.define` in
+`nuxt.config.ts`:
+
+```ts
+vite: { define: { __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: "true" } }
+```
+
+Nuxt spreads user `vite.define` last, so this overrides its default and the
+mismatch is always logged — in dev and after `npm run build && npm run start`
+alike.
 
 > Ground-truth check that does **not** depend on the flag: inspect the raw SSR
 > HTML. The bug app's server response contains `<panel>` elements; the fixed

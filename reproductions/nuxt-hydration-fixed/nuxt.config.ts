@@ -9,11 +9,13 @@ export default defineNuxtConfig({
   build: {
     transpile: ["@egjs/vue3-flicking"]
   },
-  // Same `debug.hydration` flag as the bug app so the two builds are identical
-  // apart from the @egjs/vue3-flicking version. With the fix there is simply no
-  // mismatch to log.
-  debug: {
-    hydration: true
+  // Same forced flag as the bug app so the two builds are identical apart from
+  // the @egjs/vue3-flicking version. With the fix there is simply no mismatch
+  // to log.
+  vite: {
+    define: {
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: "true"
+    }
   },
   compatibilityDate: "2024-11-01"
 });
