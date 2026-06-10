@@ -2,7 +2,7 @@
  * Copyright (c) 2015 NAVER Corp.
  * egjs projects are licensed under the MIT license
  */
-import { h, defineComponent, VNode, resolveComponent, Fragment, getCurrentInstance, Comment, Text } from "vue";
+import { h, defineComponent, VNode, Fragment, getCurrentInstance, Comment, Text } from "vue";
 import ListDiffer, { DiffResult } from "@egjs/list-differ";
 import Component from "@egjs/component";
 import VanillaFlicking, {
@@ -25,9 +25,6 @@ import { VueFlicking } from "./types";
 
 const Flicking = defineComponent({
   props: FlickingProps,
-  components: {
-    Panel: VuePanel
-  },
   data() {
     return {} as {
       renderEmitter: Component<{ render: void }>;
@@ -53,8 +50,12 @@ const Flicking = defineComponent({
         ? getRenderingPanels(flicking, diffResult)
         : defaultSlots;
 
-      const panelComponent = resolveComponent("Panel");
-      const panels = slots.map((slot, idx) => h(panelComponent as any, {
+      // Use the imported VuePanel directly instead of `resolveComponent("Panel")`.
+      // `getPanels` is evaluated lazily as the camera's default slot, and in prod SSR
+      // the rendering instance context can be lost at that point — `resolveComponent`
+      // would then fall back to the string "Panel" and render a `<panel>` native tag,
+      // causing a hydration mismatch (`<panel>` vs Fragment).
+      const panels = slots.map((slot, idx) => h(VuePanel as any, {
         key: slot.key!,
         ref: idx.toString()
       }, () => slot));
