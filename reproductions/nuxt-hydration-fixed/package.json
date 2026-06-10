@@ -1,0 +1,17 @@
+{
+  "name": "nuxt-hydration-fixed",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "start": "node .output/server/index.mjs",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@egjs/vue3-flicking": "file:../../packages/vue3-flicking",
+    "nuxt": "^3.13.0",
+    "vue": "^3.4.0"
+  }
+}
