@@ -38,6 +38,27 @@ name. This guarantees panels are wrapped in the same component regardless of
 render context. See `packages/vue3-flicking/src/Flicking.ts` (branch
 `fix/vue3-ssr-panel-hydration-mismatch`).
 
+## Seeing the warning in a production build
+
+By default Vue **strips the detailed hydration mismatch warnings**
+(`- rendered on server: ... / - expected on client: ...`) from production
+builds — they are gated behind the `__VUE_PROD_HYDRATION_MISMATCH_DETAILS__`
+feature flag (default `false`). So after `npm run build && npm run start` the
+mismatch still *happens* (the server sends `<panel>`, the client replaces it),
+but **nothing is logged** unless the flag is on.
+
+Both apps enable it the Nuxt-native way — `debug: { hydration: true }` in
+`nuxt.config.ts`, which sets `__VUE_PROD_HYDRATION_MISMATCH_DETAILS__` to
+`true`. That is why the bug app prints the mismatch even in production.
+
+> Ground-truth check that does **not** depend on the flag: inspect the raw SSR
+> HTML. The bug app's server response contains `<panel>` elements; the fixed
+> app's does not.
+>
+> ```bash
+> curl -s http://localhost:3000 | grep -o '<panel>' | head   # bug app -> matches
+> ```
+
 ## How to run
 
 ### Bug app (published 4.14.0)

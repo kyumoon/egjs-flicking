@@ -8,5 +8,13 @@ export default defineNuxtConfig({
   build: {
     transpile: ["@egjs/vue3-flicking"]
   },
+  // Vue strips the detailed "rendered on server / expected on client" hydration
+  // warnings from production builds — they are gated behind the
+  // `__VUE_PROD_HYDRATION_MISMATCH_DETAILS__` feature flag (default false).
+  // Nuxt turns that flag on when `debug.hydration` is set, so the mismatch is
+  // still logged to the console after `npm run build && npm run start`.
+  debug: {
+    hydration: true
+  },
   compatibilityDate: "2024-11-01"
 });
